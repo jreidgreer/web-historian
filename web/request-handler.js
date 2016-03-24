@@ -1,6 +1,7 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var requestHelpers = require('./http-helpers.js');
+var qs = require('querystring');
 // require more modules/folders here!
 
 
@@ -16,7 +17,19 @@ exports.handleRequest = function (req, res) {
       requestHelpers.sendStaticResponse(res, '/public/styles.css');
     }
   } else if (req.method === 'POST') {
-    //
+    var queryData = '';
+    req.on('data', function(data) {
+      queryData += data;
+    });
+    req.on('end', function(data) {
+      var formInput = qs.parse(queryData);
+      // console.log(formInput);
+      //chain of promises
+      archive.readListOfUrls();
+        // .then(function(listTextFile) {
+
+        // }).then()
+    });
   }
 
 

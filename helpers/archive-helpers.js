@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var Promise = require('bluebird');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -9,33 +10,53 @@ var _ = require('underscore');
  * customize it in any way you wish.
  */
 
-exports.paths = {
+var paths = {
   siteAssets: path.join(__dirname, '../web/public'),
   archivedSites: path.join(__dirname, '../archives/sites'),
   list: path.join(__dirname, '../archives/sites.txt')
 };
 
 // Used for stubbing paths for tests, do not modify
-exports.initialize = function(pathsObj) {
+var initialize = function(pathsObj) {
   _.each(pathsObj, function(path, type) {
-    exports.paths[type] = path;
+    paths[type] = path;
   });
 };
 
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function() {
+var readListOfUrls = function() {
+  return promise = new Promise(function(resolve, reject) {
+    fs.readFile(paths.list, 'utf8', function(err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log(data);
+        resolve(data);
+      }
+    });
+  });
 };
 
-exports.isUrlInList = function() {
+var isUrlInList = function(data) {
 };
 
-exports.addUrlToList = function() {
+var addUrlToList = function() {
 };
 
-exports.isUrlArchived = function() {
+var isUrlArchived = function() {
 };
 
-exports.downloadUrls = function() {
+var downloadUrls = function() {
+};
+
+module.exports = {
+  paths: paths,
+  initialize: initialize,
+  readListOfUrls: readListOfUrls,
+  isUrlInList: isUrlInList,
+  addUrlToList: addUrlToList,
+  isUrlArchived: isUrlArchived,
+  downloadUrls: downloadUrls
 };
