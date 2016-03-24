@@ -15,9 +15,8 @@ exports.headers = headers = {
   // css, or anything that doesn't change often.)
 exports.serveAssets = function(asset, callback) { // Might need res argument
   fs.readFile(asset, 'utf8', function(err, result) {
-    console.log('asset', asset, 'result', result);
     if (err) {
-      console.log('error readFile', err);
+      callback(err, null);
     } else {
       callback(err, result);
     }
