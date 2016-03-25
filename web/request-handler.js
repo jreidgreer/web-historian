@@ -22,14 +22,44 @@ exports.handleRequest = function (req, res) {
       queryData += data;
     });
     req.on('end', function(data) {
-      var formInput = qs.parse(queryData);
+      var url = qs.parse(queryData).url;
       // console.log(formInput);
-      //chain of promises
-      archive.readListOfUrls();
-        // .then(function(listTextFile) {
+      //we want formInput.url <- isUrlInList
+      
+      archive.readListOfUrls(function(err, urlList) {
+        if (archive.isUrlInList(url, urlList)) {
+          console.log('after isUrlInList');
+          requestHelpers.sendStaticResponse(res, '/public/loading.html');
+        } else {
+          archive.isUrlArchived(url, function(isInArchive) {
+            console.log('request handler access to isInArchive', isInArchive);
+            if (isInArchive) {
+              var sanitizedUrl = archive.sanitizeUrl(url) + '.html';
+              console.log(__dirname, 'dirname!!');
+              var urlPath = path.join('/../../archives/sites', sanitizedUrl);
+              console.log('urlPath', urlPath); //////////////potential error
+              requestHelpers.sendStaticResponse(res, urlPath);
+            } else {
+              console.log(isInArchive); ////////////potentially undefined
+              archive.addUrlToList(url);
+              requestHelpers.sendStaticResponse(res, '/public/loading.html');
+            }
+          });
+        }
+      });
 
-        // }).then()
     });
+    // Take URL of post
+    // Read sites.txt with readListOfUrls
+      //isUrlInList
+        // Yes
+          // Redirect to loading.html
+        // No
+          // isUrlArchived
+            // Yes
+              // Redirect to cached copy
+            // No 
+              // Add to list
   }
 
 

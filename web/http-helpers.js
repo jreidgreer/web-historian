@@ -29,7 +29,7 @@ var sendResponse = function(settings) {
   // Assign settings to variables
   res = settings.res;
   code = settings.code || 200;
-  headers = settings.headers || headers('text/html');
+  headers = settings.headers || makeHeaders('text/html');
   content = settings.content || '';
 
   // Format and send response
